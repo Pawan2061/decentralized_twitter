@@ -17,7 +17,7 @@ export default function Nav() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 border-b bg-white/75 backdrop-blur-sm">
+      <div className="relative  top-0 left-0 right-0 border-b bg-white/75 backdrop-blur-sm">
         <div className="flex flex-col sm:flex-row items-center px-4 py-2 sm:py-0 sm:h-14 space-y-2 sm:space-y-0">
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg" />

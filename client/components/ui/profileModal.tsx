@@ -8,13 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -22,9 +16,11 @@ import {
   ExternalLinkIcon,
   LogOutIcon,
   SettingsIcon,
+  UserCog,
   User2Icon,
 } from "lucide-react";
 import { useAccount, useDisconnect } from "wagmi";
+import Link from "next/link";
 
 export function ProfileModal({ isOpen, onClose }: any) {
   const { address } = useAccount();
@@ -84,10 +80,12 @@ export function ProfileModal({ isOpen, onClose }: any) {
         </div>
 
         <div className="grid grid-cols-1 gap-2">
-          <Button variant="outline" className="justify-start">
-            <SettingsIcon className="mr-2 h-4 w-4" />
-            Settings
-          </Button>
+          <Link href="/profile">
+            <Button variant="outline" className="justify-start w-full">
+              <UserCog className="mr-2 h-4 w-4" />
+              Edit Profile
+            </Button>
+          </Link>
 
           <Button variant="outline" className="justify-start">
             <ExternalLinkIcon className="mr-2 h-4 w-4" />
@@ -95,14 +93,14 @@ export function ProfileModal({ isOpen, onClose }: any) {
           </Button>
 
           <Button
-            variant="destructive"
-            className="justify-start mt-2"
+            variant="outline"
+            className="justify-start mt-2 text-red-500"
             onClick={() => {
               disconnect();
               onClose();
             }}
           >
-            <LogOutIcon className="mr-2 h-4 w-4" />
+            <LogOutIcon className="mr-2 h-4 w-4  " />
             Disconnect Wallet
           </Button>
         </div>
