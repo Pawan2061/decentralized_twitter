@@ -19,9 +19,9 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
     console.error("connect function is not available");
     return;
   }
-  const handleConnect = async (connector: any) => {
-    console.log("handleConnect called with:", connector); // Debugging
+  console.log(isPending, "pending and ");
 
+  const handleConnect = async (connector: any) => {
     try {
       await connect({ connector });
       console.log("Wallet connected successfully");
@@ -37,9 +37,6 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
       console.log("Error details:", error.message, error.stack);
     }
   };
-  if (!connectors || connectors.length === 0) {
-    return <p>No wallets available</p>;
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -52,7 +49,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
             <Button
               key={connector.id}
               onClick={() => handleConnect(connector)}
-              // disabled={!connector.ready || isPending}
+              disabled={isPending}
               className="w-full justify-start gap-4 bg-white hover:bg-gray-100 text-black border"
             >
               {connector.name === "MetaMask" && (

@@ -10,20 +10,24 @@ contract DecentralizedTwitter {
         uint256 likes;
     }
     struct UserProfile {
+        uint256 id;
         address user;
         string name;
-        string avatar;
         bool premium;
         string bio;
     }
 
     mapping(address => UserProfile) public userProfile;
     mapping(uint256 => Post) public posts;
+    mapping(uint256 => UserProfile) public users;
+
     mapping(address => uint256[]) public userPosts;
     mapping(address => mapping(address => bool)) public followers;
     mapping(uint256 => address[]) public postLikes;
 
     uint public postCount;
+    uint public userCount;
+    uint256[] public userIds;
     uint256[] public allPostIds;
     event PostCreated(
         uint256 indexed PostId,
@@ -31,11 +35,31 @@ contract DecentralizedTwitter {
         string ContentId,
         uint256 timestamp
     );
+    event ProfileCreated(address indexed user, string name);
 
     event PostLiked(uint256 indexed postId, address indexed liker);
     event Unfollowed(address indexed follower, address indexed unfollower);
     event TipSent(address indexed from, address indexed to, uint amount);
+
     event UserFollowed(address indexed user, address indexed following);
+
+    function createProfile(string memory _name, string memory _bio) public {
+        userCount++;
+        users[userCount] = UserProfile(
+            userCount,
+            msg.sender,
+            _name,
+            false,
+            _bio
+        );
+
+        emit ProfileCreated(msg.sender, _name);
+    }
+
+    function enablePremium(uint256 _userId) public {
+        require(msg.sender != address(0), "Invalid user");
+        users[_userId].premium = true;
+    }
 
     function createPost(string memory _contentId) public {
         postCount++;

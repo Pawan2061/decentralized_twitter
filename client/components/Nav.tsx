@@ -7,10 +7,13 @@ import { BellIcon } from "@radix-ui/react-icons";
 import { useAccount } from "wagmi";
 import { useState } from "react";
 import { WalletModal } from "./WalletModal";
+import { ProfileModal } from "../components/ui/profileModal";
+import { User2 } from "lucide-react";
 
 export default function Nav() {
   const { isConnected } = useAccount();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   return (
     <>
@@ -36,7 +39,15 @@ export default function Nav() {
                 <Button variant="ghost" size="icon" className="relative">
                   <BellIcon className="h-5 w-5" />
                 </Button>
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500" />
+                <Button
+                  variant="ghost"
+                  className="p-0 h-auto"
+                  onClick={() => setIsProfileModalOpen(true)}
+                >
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <User2 className="text-white h-4 w-4 sm:h-5 sm:w-5" />
+                  </div>
+                </Button>
                 <Button
                   size="sm"
                   className="sm:size-default bg-[#007AFF] hover:bg-[#007AFF]/90"
@@ -61,6 +72,11 @@ export default function Nav() {
       <WalletModal
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
+      />
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
       />
     </>
   );
