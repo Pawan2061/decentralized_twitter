@@ -1,10 +1,16 @@
 import { http, createConfig } from "wagmi";
 import { mainnet, sepolia } from "wagmi/chains";
-import { injected, coinbaseWallet, walletConnect } from "wagmi/connectors";
+import {
+  injected,
+  coinbaseWallet,
+  walletConnect,
+  metaMask,
+} from "wagmi/connectors";
 
-// Set up wagmi config
 export const config = createConfig({
   chains: [mainnet, sepolia],
+  ssr: true,
+  connectors: [metaMask()],
   transports: {
     [mainnet.id]: http("https://mainnet.example.com"),
     [sepolia.id]: http("https://sepolia.example.com"),

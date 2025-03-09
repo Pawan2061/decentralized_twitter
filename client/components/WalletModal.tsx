@@ -15,10 +15,12 @@ interface WalletModalProps {
 export function WalletModal({ isOpen, onClose }: WalletModalProps) {
   const { connect, connectors, isPending } = useConnect();
   const { switchChain } = useSwitchChain();
-  console.log(switchChain, "here");
-
+  if (!connect) {
+    console.error("connect function is not available");
+    return;
+  }
   const handleConnect = async (connector: any) => {
-    console.log("Attempting to connect with:", connector);
+    console.log("handleConnect called with:", connector); // Debugging
 
     try {
       await connect({ connector });
@@ -50,7 +52,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
             <Button
               key={connector.id}
               onClick={() => handleConnect(connector)}
-              disabled={!connector.ready || isPending}
+              // disabled={!connector.ready || isPending}
               className="w-full justify-start gap-4 bg-white hover:bg-gray-100 text-black border"
             >
               {connector.name === "MetaMask" && (

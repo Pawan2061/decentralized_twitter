@@ -86,6 +86,19 @@ contract DecentralizedTwitter {
         require(_postId > 0 && _postId <= postCount, "Post doesnt exist");
         return posts[_postId];
     }
+
+    function getPosts() public view returns (Post[] memory) {
+        require(allPostIds.length > 0, "No posts found");
+
+        Post[] memory postsFound = new Post[](allPostIds.length);
+
+        for (uint i = 0; i < allPostIds.length; i++) {
+            postsFound[i] = posts[allPostIds[i]];
+        }
+
+        return postsFound;
+    }
+
     function checkIfFollowing(
         address _follower,
         address _following
