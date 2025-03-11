@@ -152,3 +152,8 @@ contract DecentralizedTwitter {
         posts[_postId].contentId = _newContentId;
     }
 }
+function deleteProfile(type name) {
+    
+}
+
+function updateProfile(){}
