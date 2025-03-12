@@ -71,6 +71,7 @@ contract DecentralizedTwitter {
             0
         );
         userPosts[msg.sender].push(postCount);
+        allPostIds.push(postCount);
         emit PostCreated(postCount, msg.sender, _contentId, block.timestamp);
     }
 
@@ -112,7 +113,9 @@ contract DecentralizedTwitter {
     }
 
     function getPosts() public view returns (Post[] memory) {
-        require(allPostIds.length > 0, "No posts found");
+        if (allPostIds.length == 0) {
+            return new Post[](0);
+        }
 
         Post[] memory postsFound = new Post[](allPostIds.length);
 
@@ -144,6 +147,7 @@ contract DecentralizedTwitter {
         );
         delete posts[_postId];
     }
+
     function updatePost(uint256 _postId, string memory _newContentId) public {
         require(
             posts[_postId].author == msg.sender,
@@ -151,9 +155,16 @@ contract DecentralizedTwitter {
         );
         posts[_postId].contentId = _newContentId;
     }
-}
-function deleteProfile(type name) {
-    
-}
 
-function updateProfile(){}
+    function deleteProfile() public {
+        require(msg.sender != address(0), "Invalid user");
+        delete userProfile[msg.sender];
+    }
+
+    function updateProfile(string memory _name, string memory _bio) public {
+        require(msg.sender != address(0), "Invalid user");
+        UserProfile storage profile = userProfile[msg.sender];
+        profile.name = _name;
+        profile.bio = _bio;
+    }
+}

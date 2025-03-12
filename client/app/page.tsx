@@ -1,8 +1,13 @@
 "use client";
-import Nav from "@/components/Nav";
 import { useTabStore } from "@/store/useTabStore";
+import Explore from "@/components/explore";
 
 export default function Home() {
   const { selectedTab } = useTabStore();
-  return <div className="">{selectedTab}</div>;
+
+  return (
+    <div className="container mx-auto">
+      {selectedTab === "explore" ? <Explore /> : null}
+    </div>
+  );
 }
