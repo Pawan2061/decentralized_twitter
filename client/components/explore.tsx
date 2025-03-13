@@ -12,7 +12,9 @@ import { holesky } from "wagmi/chains";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { CreatePostDialog } from "./create-post-dialog";
 import { getFromIPFS, getIPFSImageUrl } from "@/lib/ipfs";
+import { refreshPosts } from "@/lib/necessary-actions";
 import type { Post, PostMetadata } from "@/types/post";
+import { useRouter } from "next/navigation";
 
 interface PostWithMetadata extends Post {
   metadata?: PostMetadata;
@@ -21,9 +23,12 @@ interface PostWithMetadata extends Post {
 const CONTRACT_ADDRESS = "0xD6717486981519F8904A5FEC8324B1D7def11682";
 
 export default function Explore() {
+  const router = useRouter();
   const { address, isConnecting: isWalletConnecting } = useAccount();
   const chainId = useChainId();
   const [likeError, setLikeError] = useState("");
+  const [visiblePosts, setVisiblePosts] = useState(10);
+
   const [postsWithMetadata, setPostsWithMetadata] = useState<
     PostWithMetadata[]
   >([]);
@@ -37,7 +42,6 @@ export default function Explore() {
     isLoading: isPostsLoading,
     isError,
     error: contractError,
-    status,
   } = useReadContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
     abi: DecentralizedTwitterABI.abi,
@@ -78,47 +82,11 @@ export default function Explore() {
     fetchMetadata();
   }, [posts]);
 
-  console.log("Contract Address:", CONTRACT_ADDRESS);
-  console.log(
-    "ABI getPosts:",
-    DecentralizedTwitterABI.abi.find((item) => item.name === "getPosts")
-  );
-  console.log("Chain ID:", chainId);
-  console.log("Expected Chain ID:", holesky.id);
-  console.log("Read Contract Status:", status);
-  console.log("Wallet Address:", address);
-  console.log("Contract Error:", contractError);
-
   const isNoPostsError = contractError?.message?.includes("No posts found");
   const shouldShowNoPosts =
     !posts || (posts as Post[]).length === 0 || isNoPostsError;
 
-  console.log(
-    {
-      isWalletConnecting,
-      chainId,
-      currentChain: holesky.id,
-      isPostsLoading,
-      isError,
-      contractError,
-      isNoPostsError,
-      posts,
-      shouldShowNoPosts,
-    },
-    "Contract read state"
-  );
-
   const { writeContract: likePost } = useWriteContract();
-
-  useEffect(() => {
-    console.log("Current posts state:", {
-      posts,
-      isPostsLoading,
-      isError,
-      contractError,
-      shouldShowNoPosts,
-    });
-  }, [posts, isPostsLoading, isError, contractError, shouldShowNoPosts]);
 
   const handleLikePost = async (postId: number) => {
     try {
@@ -135,11 +103,15 @@ export default function Explore() {
     }
   };
 
-  const handlePostCreated = () => {
-    console.log("Post created, should refresh the list");
+  const handlePostCreated = async () => {
+    try {
+      await refreshPosts();
+      router.refresh();
+    } catch (error) {
+      console.error("Error refreshing posts:", error);
+    }
   };
 
-  // Handle image error by trying the next gateway
   const handleImageError = (cid: string) => {
     setImageGatewayIndexes((prev) => ({
       ...prev,
@@ -147,6 +119,9 @@ export default function Explore() {
     }));
   };
 
+  const handleLoadMore = () => {
+    setVisiblePosts((prev) => Math.min(prev + 10, postsWithMetadata.length));
+  };
   if (isWalletConnecting) {
     return (
       <div className="flex flex-col gap-4 justify-center items-center min-h-[50vh]">
@@ -205,7 +180,7 @@ export default function Explore() {
           {likeError}
         </div>
       )}
-      <div className="space-y-4">
+      <div className="space-y-4 grid grid-cols-2 gap-6">
         {shouldShowNoPosts ? (
           <div className="text-center p-8 space-y-4">
             <p className="text-gray-500">
@@ -222,8 +197,8 @@ export default function Explore() {
             />
           </div>
         ) : (
-          postsWithMetadata.map((post) => (
-            <Card key={post.id.toString()} className="p-4">
+          postsWithMetadata.slice(0, visiblePosts).map((post) => (
+            <Card key={post.id.toString()} className="p-4 w-full h-full">
               <div className="flex items-center mb-4">
                 <div className="w-8 h-8 rounded-full bg-gray-200 mr-2 flex items-center justify-center">
                   {post.author.slice(0, 2)}
@@ -239,13 +214,13 @@ export default function Explore() {
               </div>
 
               {post.metadata ? (
-                <div className="space-y-3">
+                <div className="space-y-3 ">
                   <h2 className="text-xl font-semibold">
                     {post.metadata.title}
                   </h2>
                   <p className="text-gray-700">{post.metadata.description}</p>
                   {post.metadata.images && post.metadata.images.length > 0 && (
-                    <div className="grid grid-cols-2 gap-2 mt-2">
+                    <div className="grid grid-cols-2 gap-2 mt-2 ">
                       {post.metadata.images.map((imageCid, index) => {
                         const cleanCid = imageCid.replace("ipfs://", "");
                         const gatewayIndex = imageGatewayIndexes[cleanCid] || 0;
@@ -285,6 +260,16 @@ export default function Explore() {
           ))
         )}
       </div>
+      {visiblePosts < postsWithMetadata.length && (
+        <div className="text-center mt-6">
+          <Button
+            className="bg-[#007AFF] hover:bg-[#5e88a6]"
+            onClick={handleLoadMore}
+          >
+            Load More Posts
+          </Button>
+        </div>
+      )}
 
       {!shouldShowNoPosts && (
         <CreatePostDialog

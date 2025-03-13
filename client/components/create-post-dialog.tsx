@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { uploadToIPFS, uploadImageToIPFS } from "@/lib/ipfs";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import type { PostMetadata } from "@/types/post";
+import { refreshPosts } from "@/lib/necessary-actions";
 
 const CONTRACT_ADDRESS = "0xD6717486981519F8904A5FEC8324B1D7def11682";
 
@@ -88,6 +89,7 @@ export function CreatePostDialog({
             setDescription("");
             setImages([]);
             onPostCreated?.();
+            refreshPosts();
             resolve(true);
           } catch (error) {
             reject(error);

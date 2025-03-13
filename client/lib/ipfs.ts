@@ -3,7 +3,6 @@ import { type PostMetadata } from "@/types/post";
 const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY;
 const PINATA_SECRET_KEY = process.env.NEXT_PUBLIC_PINATA_SECRET_KEY;
 
-// Multiple gateways for redundancy
 const IPFS_GATEWAYS = [
   "https://gateway.pinata.cloud/ipfs/",
   "https://ipfs.io/ipfs/",
@@ -83,7 +82,6 @@ async function tryFetchFromGateway(gateway: string, cid: string) {
 export async function getFromIPFS(cid: string): Promise<PostMetadata> {
   if (!cid) throw new Error("No CID provided");
 
-  // Try each gateway in sequence until one works
   for (const gateway of IPFS_GATEWAYS) {
     try {
       const data = await tryFetchFromGateway(gateway, cid);
@@ -97,7 +95,6 @@ export async function getFromIPFS(cid: string): Promise<PostMetadata> {
   throw new Error("Failed to fetch from all IPFS gateways");
 }
 
-// Helper function to get image URL from IPFS
 export function getIPFSImageUrl(cid: string, gatewayIndex = 0): string {
   const cleanCid = cid.replace("ipfs://", "");
   const gateway = IPFS_GATEWAYS[gatewayIndex % IPFS_GATEWAYS.length];
