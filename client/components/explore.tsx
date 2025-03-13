@@ -8,7 +8,7 @@ import {
   useAccount,
   useChainId,
 } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { holesky } from "wagmi/chains";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { CreatePostDialog } from "./create-post-dialog";
 
@@ -20,7 +20,8 @@ interface Post {
   likes: number;
 }
 
-const CONTRACT_ADDRESS = "0x8b39cD68dB11AcCD24DC2f5f0Df18b75F05f6Fb4"; // Contract address on Sepolia
+// Note: You'll need to deploy the contract to Holesky and update this address
+const CONTRACT_ADDRESS = "0xD6717486981519F8904A5FEC8324B1D7def11682"; // Contract address on Holesky
 
 export default function Explore() {
   const { address, isConnecting: isWalletConnecting } = useAccount();
@@ -37,7 +38,7 @@ export default function Explore() {
     address: CONTRACT_ADDRESS as `0x${string}`,
     abi: DecentralizedTwitterABI.abi,
     functionName: "getPosts",
-    chainId: sepolia.id,
+    chainId: holesky.id,
     account: address,
   });
 
@@ -47,7 +48,7 @@ export default function Explore() {
     DecentralizedTwitterABI.abi.find((item) => item.name === "getPosts")
   );
   console.log("Chain ID:", chainId);
-  console.log("Expected Chain ID:", sepolia.id);
+  console.log("Expected Chain ID:", holesky.id);
   console.log("Read Contract Status:", status);
   console.log("Wallet Address:", address);
   console.log("Contract Error:", contractError);
@@ -60,7 +61,7 @@ export default function Explore() {
     {
       isWalletConnecting,
       chainId,
-      currentChain: sepolia.id,
+      currentChain: holesky.id,
       isPostsLoading,
       isError,
       contractError,
@@ -122,11 +123,11 @@ export default function Explore() {
     );
   }
 
-  if (chainId !== sepolia.id) {
+  if (chainId !== holesky.id) {
     return (
       <div className="text-center p-8">
         <p className="text-yellow-500">
-          Please switch to the Sepolia network to view posts
+          Please switch to the Holesky network to view posts
         </p>
       </div>
     );

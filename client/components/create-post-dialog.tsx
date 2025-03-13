@@ -16,7 +16,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 
-const CONTRACT_ADDRESS = "0x8b39cD68dB11AcCD24DC2f5f0Df18b75F05f6Fb4";
+// Note: You'll need to deploy the contract to Holesky and update this address
+const CONTRACT_ADDRESS = "0xD6717486981519F8904A5FEC8324B1D7def11682"; // Contract address on Holesky
 
 interface CreatePostDialogProps {
   trigger: React.ReactNode;

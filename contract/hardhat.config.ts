@@ -11,6 +11,12 @@ const config: HardhatUserConfig = {
       url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
+    holesky: {
+      url: "https://ethereum-holesky.publicnode.com",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      chainId: 17000,
+      gasPrice: 3000000000, // 3 gwei
+    },
   },
 };
 
