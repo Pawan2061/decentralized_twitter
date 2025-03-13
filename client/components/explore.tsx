@@ -11,7 +11,7 @@ import {
 import { holesky } from "wagmi/chains";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { CreatePostDialog } from "./create-post-dialog";
-import { getFromIPFS } from "@/lib/ipfs";
+import { getFromIPFS, getIPFSImageUrl } from "@/lib/ipfs";
 import type { Post, PostMetadata } from "@/types/post";
 
 interface PostWithMetadata extends Post {
@@ -28,6 +28,9 @@ export default function Explore() {
     PostWithMetadata[]
   >([]);
   const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
+  const [imageGatewayIndexes, setImageGatewayIndexes] = useState<
+    Record<string, number>
+  >({});
 
   const {
     data: posts,
@@ -43,7 +46,6 @@ export default function Explore() {
     account: address,
   });
 
-  // Fetch metadata for all posts
   useEffect(() => {
     async function fetchMetadata() {
       if (!posts || (posts as Post[]).length === 0) return;
@@ -135,6 +137,14 @@ export default function Explore() {
 
   const handlePostCreated = () => {
     console.log("Post created, should refresh the list");
+  };
+
+  // Handle image error by trying the next gateway
+  const handleImageError = (cid: string) => {
+    setImageGatewayIndexes((prev) => ({
+      ...prev,
+      [cid]: (prev[cid] || 0) + 1,
+    }));
   };
 
   if (isWalletConnecting) {
@@ -236,14 +246,24 @@ export default function Explore() {
                   <p className="text-gray-700">{post.metadata.description}</p>
                   {post.metadata.images && post.metadata.images.length > 0 && (
                     <div className="grid grid-cols-2 gap-2 mt-2">
-                      {post.metadata.images.map((imageCid, index) => (
-                        <img
-                          key={index}
-                          src={`https://gateway.pinata.cloud/ipfs/${imageCid}`}
-                          alt={`Image ${index + 1}`}
-                          className="rounded-lg w-full h-48 object-cover"
-                        />
-                      ))}
+                      {post.metadata.images.map((imageCid, index) => {
+                        const cleanCid = imageCid.replace("ipfs://", "");
+                        const gatewayIndex = imageGatewayIndexes[cleanCid] || 0;
+
+                        return (
+                          <div key={index} className="relative aspect-square">
+                            <img
+                              src={getIPFSImageUrl(cleanCid, gatewayIndex)}
+                              alt={`Image ${index + 1} for ${
+                                post.metadata?.title
+                              }`}
+                              className="rounded-lg w-full h-full object-cover"
+                              onError={() => handleImageError(cleanCid)}
+                              loading="lazy"
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
