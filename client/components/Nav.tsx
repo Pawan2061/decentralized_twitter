@@ -18,7 +18,6 @@ export default function Nav() {
   const { selectedTab, setSelectedTab } = useTabStore();
 
   const handlePostCreated = () => {
-    // Switch to explore tab to see the new post
     setSelectedTab("explore");
   };
 
@@ -40,8 +39,9 @@ export default function Nav() {
                   onValueChange={(value) => setSelectedTab(value)}
                   className="w-full max-w-[400px]"
                 >
-                  <TabsList className="grid w-full grid-cols-1">
+                  <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="explore">Explore</TabsTrigger>
+                    <TabsTrigger value="inbox">Inbox</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>

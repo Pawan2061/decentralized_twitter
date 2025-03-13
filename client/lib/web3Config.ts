@@ -2,7 +2,6 @@ import { http, createConfig } from "wagmi";
 import { mainnet, sepolia, holesky } from "wagmi/chains";
 import { metaMask } from "wagmi/connectors";
 
-// Fallback to public RPC if env vriables are not set
 const SEPOLIA_RPC =
   process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || "https://rpc.sepolia.org";
 const MAINNET_RPC =
