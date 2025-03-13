@@ -15,7 +15,7 @@ const config: HardhatUserConfig = {
       url: "https://ethereum-holesky.publicnode.com",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 17000,
-      gasPrice: 3000000000, // 3 gwei
+      gasPrice: 3000000000,
     },
   },
 };

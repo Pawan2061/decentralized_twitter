@@ -6,7 +6,6 @@ async function main() {
 
   const Contract = await hre.ethers.getContractFactory("DecentralizedTwitter");
 
-  // Set different gas prices based on network
   const deployOptions = {
     gasPrice:
       network.name === "holesky"
