@@ -10,6 +10,7 @@ import {
 } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
+import { CreatePostDialog } from "./create-post-dialog";
 
 interface Post {
   id: number;
@@ -40,7 +41,6 @@ export default function Explore() {
     account: address,
   });
 
-  // Debug logs with more error details
   console.log("Contract Address:", CONTRACT_ADDRESS);
   console.log(
     "ABI getPosts:",
@@ -52,27 +52,6 @@ export default function Explore() {
   console.log("Wallet Address:", address);
   console.log("Contract Error:", contractError);
 
-  // Add timeout handling for pending state
-  const [isPendingTimeout, setIsPendingTimeout] = useState(false);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    if (status === "pending") {
-      timeoutId = setTimeout(() => {
-        setIsPendingTimeout(true);
-        console.log("Contract read timed out after 10 seconds");
-      }, 10000); // 10 seconds timeout
-    } else {
-      setIsPendingTimeout(false);
-    }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [status]);
-
-  // If contract reverts with "No posts found", treat it as empty posts
   const isNoPostsError = contractError?.message?.includes("No posts found");
   const shouldShowNoPosts =
     !posts || (posts as Post[]).length === 0 || isNoPostsError;
@@ -87,15 +66,26 @@ export default function Explore() {
       contractError,
       isNoPostsError,
       posts,
+      shouldShowNoPosts,
     },
     "Contract read state"
   );
 
   const { writeContract: likePost } = useWriteContract();
 
+  useEffect(() => {
+    console.log("Current posts state:", {
+      posts,
+      isPostsLoading,
+      isError,
+      contractError,
+      shouldShowNoPosts,
+    });
+  }, [posts, isPostsLoading, isError, contractError, shouldShowNoPosts]);
+
   const handleLikePost = async (postId: number) => {
     try {
-      setLikeError(""); // Clear any previous errors
+      setLikeError("");
       likePost?.({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: DecentralizedTwitterABI.abi,
@@ -106,6 +96,11 @@ export default function Explore() {
       console.error("Error liking post:", err);
       setLikeError("Failed to like post. Please try again.");
     }
+  };
+
+  const handlePostCreated = () => {
+    // Optionally refresh the posts list
+    console.log("Post created, should refresh the list");
   };
 
   if (isWalletConnecting) {
@@ -147,26 +142,6 @@ export default function Explore() {
     );
   }
 
-  if (isPostsLoading) {
-    return (
-      <div className="flex flex-col gap-4 justify-center items-center min-h-[50vh]">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <p className="text-gray-500">Loading posts...</p>
-      </div>
-    );
-  }
-
-  if (isPendingTimeout) {
-    return (
-      <div className="text-center p-8">
-        <p className="text-yellow-500">
-          Taking too long to load posts. There might be an issue with the
-          network or contract. Please try refreshing the page.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="relative max-w-3xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Explore Posts</h1>
@@ -177,10 +152,19 @@ export default function Explore() {
       )}
       <div className="space-y-4">
         {shouldShowNoPosts ? (
-          <div className="text-center p-8">
+          <div className="text-center p-8 space-y-4">
             <p className="text-gray-500">
               No posts yet. Be the first one to post!
             </p>
+            <CreatePostDialog
+              trigger={
+                <Button className="flex items-center gap-2">
+                  <PenSquare className="h-4 w-4" />
+                  Create Post
+                </Button>
+              }
+              onPostCreated={handlePostCreated}
+            />
           </div>
         ) : (
           (posts as Post[])?.map((post: Post) => (
@@ -212,15 +196,16 @@ export default function Explore() {
         )}
       </div>
 
-      <Button
-        className="fixed bottom-6 right-6 rounded-full w-12 h-12 p-0"
-        onClick={() => {
-          // We'll implement this in the next step
-          console.log("Create post clicked");
-        }}
-      >
-        <PenSquare className="h-6 w-6" />
-      </Button>
+      {!shouldShowNoPosts && (
+        <CreatePostDialog
+          trigger={
+            <Button className="fixed bottom-6 right-6 rounded-full w-12 h-12 p-0">
+              <PenSquare className="h-6 w-6" />
+            </Button>
+          }
+          onPostCreated={handlePostCreated}
+        />
+      )}
     </div>
   );
 }
