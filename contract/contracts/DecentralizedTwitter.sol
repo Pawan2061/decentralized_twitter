@@ -202,11 +202,6 @@ contract DecentralizedTwitter {
     }
 
     function updateProfile(string memory _name, string memory _bio) public {
-        require(
-            userProfile[msg.sender].user != address(0),
-            "Profile does not exist"
-        );
-
         UserProfile storage profile = userProfile[msg.sender];
         profile.name = _name;
         profile.bio = _bio;

@@ -7,7 +7,7 @@ import DecentralizedTwitterABI from "../../../contract/artifacts/contracts/Decen
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/useProfileStore";
 
-const CONTRACT_ADDRESS = "0xe6251C95E67516Bd4290c97fb9838fCD593351a7";
+const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
 
 interface UserProfile {
   id: number;

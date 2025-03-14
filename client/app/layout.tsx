@@ -9,7 +9,15 @@ import Nav from "@/components/Nav";
 
 const inter = Inter({ subsets: ["latin"] });
 const queryClient = new QueryClient();
+// declare global {
+//   interface BigInt {
+//     toJSON(): string;
+//   }
+// }
 
+// BigInt.prototype.toJSON = function () {
+//   return this.toString();
+// };
 export default function RootLayout({
   children,
 }: {
