@@ -1,53 +1,170 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
-import { useAccount } from "wagmi";
+import React, { useState, useEffect } from "react";
+import { useAccount, useWriteContract, useReadContract } from "wagmi";
+import { Loader2 } from "lucide-react";
+import DecentralizedTwitterABI from "../../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
+import { toast } from "sonner";
+import { useProfileStore } from "@/store/useProfileStore";
+
+const CONTRACT_ADDRESS = "0xD6717486981519F8904A5FEC8324B1D7def11682";
+
+interface UserProfile {
+  id: number;
+  user: string;
+  name: string;
+  premium: boolean;
+  bio: string;
+}
+
 const ProfileBanner = () => {
   const { address, isConnected } = useAccount();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [name, setName] = useState("pandeh");
-  const [bio, setBio] = useState("dnedjwndjwd");
-  const [externalLink, setExternalLink] = useState("");
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { writeContract, isPending } = useWriteContract();
+  const { setProfile, getProfile } = useProfileStore();
+
+  const { data: userProfile, isLoading: isLoadingProfile } = useReadContract({
+    address: CONTRACT_ADDRESS as `0x${string}`,
+    abi: DecentralizedTwitterABI.abi,
+    functionName: "userProfile",
+    args: [address],
+    query: {
+      enabled: !!address,
+    },
+  });
+
+  const hasExistingProfile =
+    userProfile &&
+    (userProfile as UserProfile).user !==
+      "0x0000000000000000000000000000000000000000";
+
+  useEffect(() => {
+    if (address) {
+      console.log(address);
+
+      const storedProfile = getProfile(address);
+      console.log(storedProfile, "profile is here");
+
+      if (storedProfile) {
+        setName(storedProfile.name);
+        setBio(storedProfile.bio);
+      } else if (userProfile && hasExistingProfile) {
+        const profile = userProfile as UserProfile;
+        setName(profile.name);
+        setBio(profile.bio);
+        setProfile(address, profile);
+      }
+    }
+  }, [address, userProfile, hasExistingProfile, getProfile, setProfile]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleSave = () => {
-    closeModal();
+  const handleSave = async () => {
+    if (!name.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await writeContract?.({
+        address: CONTRACT_ADDRESS as `0x${string}`,
+        abi: DecentralizedTwitterABI.abi,
+        functionName: hasExistingProfile ? "updateProfile" : "createProfile",
+        args: [name, bio || ""],
+      });
+
+      if (address) {
+        setProfile(address, {
+          // id: hasExistingProfile ? Number((userProfile as UserProfile).id) : 0,
+          user: address,
+          name,
+          bio: bio || "",
+          premium: hasExistingProfile
+            ? (userProfile as UserProfile).premium
+            : false,
+        });
+        console.log({
+          address,
+        });
+      }
+
+      toast.success(
+        hasExistingProfile
+          ? "Profile updated successfully!"
+          : "Profile created successfully!"
+      );
+      closeModal();
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(
+        hasExistingProfile
+          ? "Failed to update profile"
+          : "Failed to create profile"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (!isConnected) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+        <p className="text-lg text-gray-600">
+          Please connect your wallet to view and edit your profile
+        </p>
+      </div>
+    );
+  }
+
+  if (isLoadingProfile) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="mt-2 text-gray-600">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <section className="flex flex-col items-center">
       <div className="relative w-full">
-        <div className="w-full h-64 bg-blue-500"></div>
+        <div className="w-full h-64 bg-gradient-to-r from-blue-500 to-purple-500"></div>
 
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-          <div className="rounded-full h-24 w-24 bg-black border-4 border-white overflow-hidden"></div>
+          <div className="rounded-full h-24 w-24 bg-gray-800 border-4 border-white overflow-hidden flex items-center justify-center text-white text-2xl">
+            {address ? address.slice(0, 2) : "?"}
+          </div>
         </div>
       </div>
 
       <div className="mt-16 space-y-4 flex flex-col items-center">
-        <p className="text-lg font-semibold text-gray-800">
-          {isConnected ? address?.slice(0, 5) : "Not Connected"}
+        <p className="text-sm font-mono text-gray-600">
+          {address?.slice(0, 6)}...{address?.slice(-4)}
         </p>
-        <h1 className="text-4xl">{name || "name here"}</h1>
+        <h1 className="text-3xl font-bold">{name || "No name set"}</h1>
+        <p className="text-gray-600">{bio || "No bio yet"}</p>
 
         <Button
-          className="bg-gray-300 text-black hover:bg-gray-200"
+          className="bg-[#007AFF] hover:bg-[#0056b3] text-white"
           onClick={openModal}
+          disabled={isPending}
         >
-          Edit Profile
+          {isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {hasExistingProfile ? "Updating..." : "Creating..."}
+            </>
+          ) : hasExistingProfile ? (
+            "Edit Profile"
+          ) : (
+            "Create Profile"
+          )}
         </Button>
-
-        <h1>{bio || "bio here"}</h1>
-        <div className="space-x-2">
-          <Button className="bg-gray-200 text-black hover:bg-gray-100 rounded-lg">
-            Add Link
-          </Button>
-          <Button className="bg-gray-200 text-black hover:bg-gray-100 rounded-lg">
-            Add Twitter
-          </Button>
-        </div>
       </div>
 
       {isModalOpen && (
@@ -57,9 +174,11 @@ const ProfileBanner = () => {
             onClick={closeModal}
           ></div>
 
-          <div className="bg-white rounded-lg w-full max-w-md mx-4 z-10 shadow-xl max-h-96 overflow-y-auto animate-scale-in">
+          <div className="bg-white rounded-lg w-full max-w-md mx-4 z-10 shadow-xl max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="sticky top-0 p-4 border-b flex justify-between items-center bg-white z-20">
-              <h2 className="text-xl font-semibold">Edit Profile</h2>
+              <h2 className="text-xl font-semibold">
+                {hasExistingProfile ? "Edit Profile" : "Create Profile"}
+              </h2>
               <button
                 onClick={closeModal}
                 className="text-gray-500 hover:text-gray-700 transition-colors"
@@ -69,33 +188,6 @@ const ProfileBanner = () => {
             </div>
 
             <div className="p-4 space-y-4">
-              <div className="flex flex-col items-center space-y-2">
-                <div className="relative group">
-                  <div className="w-20 h-20 bg-black rounded-full overflow-hidden">
-                    {/* Profile image would go here */}
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="bg-black bg-opacity-50 text-white p-2 rounded-full">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <p className="text-sm text-blue-500">Change profile picture</p>
-              </div>
-
               <div>
                 <label className="block text-lg font-medium mb-1">Name</label>
                 <p className="text-sm text-blue-500 mb-1">Required</p>
@@ -104,6 +196,7 @@ const ProfileBanner = () => {
                   className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name"
                 />
               </div>
 
@@ -112,33 +205,30 @@ const ProfileBanner = () => {
                 <p className="text-sm text-gray-500 mb-1">Optional</p>
                 <textarea
                   className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  rows={2}
+                  rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="block text-lg font-medium mb-1">
-                  External Link
-                </label>
-                <p className="text-sm text-gray-500 mb-1">Optional</p>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  placeholder="URL"
-                  value={externalLink}
-                  onChange={(e) => setExternalLink(e.target.value)}
+                  placeholder="Tell us about yourself"
                 />
               </div>
             </div>
 
             <div className="sticky bottom-0 p-4 border-t bg-white">
               <Button
-                className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                className="w-full bg-[#007AFF] hover:bg-[#0056b3] text-white transition-colors"
                 onClick={handleSave}
+                disabled={isLoading || isPending}
               >
-                Save Settings
+                {isLoading || isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {hasExistingProfile ? "Updating..." : "Creating..."}
+                  </>
+                ) : hasExistingProfile ? (
+                  "Save Changes"
+                ) : (
+                  "Create Profile"
+                )}
               </Button>
             </div>
           </div>
