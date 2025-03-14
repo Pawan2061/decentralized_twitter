@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import DecentralizedTwitterABI from "../../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/useProfileStore";
+import Landing from "@/components/landing";
 
 const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
 
@@ -112,6 +113,8 @@ const ProfileBanner = () => {
   };
 
   if (!isConnected) {
+    console.log("okay here");
+
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <p className="text-lg text-gray-600">
