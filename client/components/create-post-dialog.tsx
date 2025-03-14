@@ -20,7 +20,7 @@ import DecentralizedTwitterABI from "../../contract/artifacts/contracts/Decentra
 import type { PostMetadata } from "@/types/post";
 import { refreshPosts } from "@/lib/necessary-actions";
 
-const CONTRACT_ADDRESS = "0xD6717486981519F8904A5FEC8324B1D7def11682";
+const CONTRACT_ADDRESS = "0xe6251C95E67516Bd4290c97fb9838fCD593351a7";
 
 interface CreatePostDialogProps {
   trigger: React.ReactNode;

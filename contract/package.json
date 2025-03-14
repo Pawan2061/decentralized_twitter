@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.js --network sepolia",
+    "deploy": "npx hardhat run scripts/deploy.js --network holesky",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
