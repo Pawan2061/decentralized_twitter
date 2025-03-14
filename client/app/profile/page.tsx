@@ -7,6 +7,8 @@ import DecentralizedTwitterABI from "../../../contract/artifacts/contracts/Decen
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/useProfileStore";
 import Landing from "@/components/landing";
+import { ColorPicker } from "@/components/ui/color-picker";
+import useColorStore from "@/store/use-color";
 
 const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
 
@@ -26,6 +28,7 @@ const ProfileBanner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { writeContract, isPending } = useWriteContract();
   const { setProfile, getProfile } = useProfileStore();
+  const { selectedColor } = useColorStore();
 
   const { data: userProfile, isLoading: isLoadingProfile } = useReadContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
@@ -126,7 +129,7 @@ const ProfileBanner = () => {
 
   if (isLoadingProfile) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+      <div className="flex  flex-col items-center justify-center min-h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
         <p className="mt-2 text-gray-600">Loading profile...</p>
       </div>
@@ -136,16 +139,25 @@ const ProfileBanner = () => {
   return (
     <section className="flex flex-col items-center">
       <div className="relative w-full">
-        <div className="w-full h-64 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+        <div
+          className="w-full h-64"
+          style={{
+            background: `linear-gradient(to right, ${selectedColor}, ${selectedColor})`,
+          }}
+        ></div>
 
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-          <div className="rounded-full h-24 w-24 bg-gray-800 border-4 border-white overflow-hidden flex items-center justify-center text-white text-2xl">
+          <div
+            className={`rounded-full h-24 w-24 bg-${selectedColor}-500 border-4 border-white overflow-hidden flex items-center justify-center text-white text-2xl`}
+          >
             {address ? address.slice(0, 2) : "?"}
           </div>
         </div>
       </div>
 
       <div className="mt-16 space-y-4 flex flex-col items-center">
+        <ColorPicker />
+
         <p className="text-sm font-mono text-gray-600">
           {address?.slice(0, 6)}...{address?.slice(-4)}
         </p>

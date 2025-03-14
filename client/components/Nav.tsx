@@ -10,12 +10,14 @@ import { ProfileModal } from "../components/ui/profileModal";
 import { User2, PenSquare } from "lucide-react";
 import { useTabStore } from "@/store/useTabStore";
 import { CreatePostDialog } from "./create-post-dialog";
+import useColorStore from "@/store/use-color";
 
 export default function Nav() {
   const { isConnected } = useAccount();
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { selectedTab, setSelectedTab } = useTabStore();
+  const { selectedColor } = useColorStore();
 
   const handlePostCreated = () => {
     setSelectedTab("explore");
@@ -52,7 +54,10 @@ export default function Nav() {
                   className="p-0 h-auto"
                   onClick={() => setIsProfileModalOpen(true)}
                 >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                  <div
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center`}
+                    style={{ backgroundColor: selectedColor }}
+                  >
                     <User2 className="text-white h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                 </Button>

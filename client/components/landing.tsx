@@ -1,9 +1,15 @@
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Faq3Demo } from "./ui/faq";
 import { FeatureCards } from "./ui/feature-card";
+import { WalletModal } from "./WalletModal";
+import { useRouter } from "next/navigation";
 
 export default function Landing() {
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const router = useRouter();
+
   return (
     <section className="">
       <div className="bg-gray-50 shadow-2xs  flex flex-col items-center py-10">
@@ -12,10 +18,18 @@ export default function Landing() {
             The home for web3 publishing
           </h1>
           <div className="p-6 flex justify-evenly ">
-            <Button className="bg-[#007AFF] hover:scale-105 p-6  hover:bg-[#008AFF] text-white">
+            <Button
+              onClick={() => setIsWalletModalOpen(true)}
+              className="bg-[#007AFF] hover:scale-105 p-6  hover:bg-[#008AFF] text-white"
+            >
               Get Started
             </Button>
-            <Button className="bg-blue-300 hover:bg-blue-400 p-6 text-blue-600">
+            <Button
+              onClick={() => {
+                router.push("/learn");
+              }}
+              className="bg-blue-300 hover:bg-blue-400 p-6 text-blue-600"
+            >
               Learn More
             </Button>
           </div>
@@ -31,6 +45,10 @@ export default function Landing() {
         <FeatureCards />
         <Faq3Demo />
       </div>
+      <WalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+      />
     </section>
   );
 }
