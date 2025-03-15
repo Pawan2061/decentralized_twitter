@@ -73,6 +73,7 @@ contract DecentralizedTwitter {
 
     function getAllProfiles() public view returns (UserProfile[] memory) {
         UserProfile[] memory allUsers = new UserProfile[](userIds.length);
+
         for (uint i = 0; i < userIds.length; i++) {
             allUsers[i] = users[userIds[i]];
         }

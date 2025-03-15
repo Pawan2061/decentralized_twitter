@@ -13,6 +13,7 @@ interface ProfileState {
   setProfile: (address: string, profile: Partial<UserProfile>) => void;
   getProfile: (address: string) => UserProfile | null;
   clearProfile: (address: string) => void;
+  getAllProfiles: () => UserProfile[];
 }
 
 export const useProfileStore = create<ProfileState>()(
@@ -41,8 +42,7 @@ export const useProfileStore = create<ProfileState>()(
         if (!address) return null;
 
         const lowerAddress = address.toLowerCase();
-        const state = get();
-        return state.profiles[lowerAddress] || null;
+        return get().profiles[lowerAddress] || null;
       },
 
       clearProfile: (address) => {
@@ -54,6 +54,8 @@ export const useProfileStore = create<ProfileState>()(
           return { profiles: rest };
         });
       },
+
+      getAllProfiles: () => Object.values(get().profiles),
     }),
     {
       name: "profile-storage",

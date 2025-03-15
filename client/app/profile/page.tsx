@@ -79,6 +79,7 @@ const ProfileBanner = () => {
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: DecentralizedTwitterABI.abi,
         functionName: hasExistingProfile ? "updateProfile" : "createProfile",
+
         args: [name, bio || ""],
       });
 
