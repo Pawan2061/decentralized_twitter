@@ -3,6 +3,7 @@ import { useTabStore } from "@/store/useTabStore";
 import Explore from "@/components/explore";
 import { useAccount } from "wagmi";
 import Landing from "@/components/landing";
+import Inbox from "@/components/inbox";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -14,7 +15,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto">
-      {selectedTab === "explore" ? <Explore /> : null}
+      {selectedTab === "explore" ? <Explore /> : <Inbox/>}
     </div>
   );
 }
