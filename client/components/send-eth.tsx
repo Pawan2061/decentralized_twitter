@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Send, Wallet } from "lucide-react";
 import { useId } from "react";
+import { parseEther } from "viem";
+import { useSendTransaction } from "wagmi";
 interface sendEthProps {
   postId: number;
   address: any;
@@ -27,6 +29,7 @@ function EthSendDialog({
   author: string;
   onClose: () => void;
 }) {
+  const { data: hash, isPending, sendTransaction } = useSendTransaction();
   const id = useId();
   console.log("okay address, is", author);
 
@@ -34,11 +37,13 @@ function EthSendDialog({
     event.preventDefault();
     const amount = event.target.elements[`amount-${id}`].value;
     const address = event.target.elements[`address-${id}`].value;
-
-    console.log(`Sending ${amount} ETH to ${address} for post #${postId}`);
+    sendTransaction({ to: address, value: parseEther(amount) });
 
     onClose();
   };
+  if (isPending) {
+    return <>loading...</>;
+  }
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
@@ -77,10 +82,13 @@ function EthSendDialog({
                 <Input
                   id={`address-${id}`}
                   type="text"
+                  defaultValue={author}
                   placeholder="0x..."
+                  disabled
                   required
                   className="peer [direction:inherit]"
                 />
+
                 <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 text-muted-foreground/80 peer-disabled:opacity-50">
                   <Send size={16} strokeWidth={2} aria-hidden="true" />
                 </div>
