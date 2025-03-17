@@ -1,5 +1,5 @@
-import { useState, useEffect, Suspense } from "react";
-import { Loader2, PenSquare } from "lucide-react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { Loader2, PenSquare, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -15,6 +15,7 @@ import { getFromIPFS, getIPFSImageUrl } from "@/lib/ipfs";
 import { refreshPosts } from "@/lib/necessary-actions";
 import type { Post, PostMetadata } from "@/types/post";
 import { useRouter } from "next/navigation";
+import { EthSendDialog } from "./send-eth";
 
 interface PostWithMetadata extends Post {
   metadata?: PostMetadata;
@@ -28,6 +29,12 @@ export default function Explore() {
   const chainId = useChainId();
   const [likeError, setLikeError] = useState("");
   const [visiblePosts, setVisiblePosts] = useState(10);
+  const [activeDialogPostId, setActiveDialogPostId] = useState<number | null>(
+    null
+  );
+  const [activeDialogAuthor, setActiveDialogAuthor] = useState<string | null>(
+    null
+  );
 
   const [postsWithMetadata, setPostsWithMetadata] = useState<
     PostWithMetadata[]
@@ -36,6 +43,18 @@ export default function Explore() {
   const [imageGatewayIndexes, setImageGatewayIndexes] = useState<
     Record<string, number>
   >({});
+
+  const handleOpenDialog = useCallback((postId: number, author: string) => {
+    console.log(postId, "dfnejfew", address);
+
+    setActiveDialogPostId(postId);
+    setActiveDialogAuthor(author);
+  }, []);
+
+  const handleCloseDialog = useCallback(() => {
+    setActiveDialogPostId(null);
+    setActiveDialogAuthor(null);
+  }, []);
 
   const {
     data: posts,
@@ -175,6 +194,15 @@ export default function Explore() {
   return (
     <div className="relative max-w-3xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Explore Posts</h1>
+
+      {activeDialogPostId !== null && activeDialogAuthor !== null && (
+        <EthSendDialog
+          postId={activeDialogPostId}
+          author={activeDialogAuthor}
+          onClose={handleCloseDialog}
+        />
+      )}
+
       {likeError && (
         <div className="mb-4 p-4 bg-red-100 text-red-600 rounded-md">
           {likeError}
@@ -199,18 +227,29 @@ export default function Explore() {
         ) : (
           postsWithMetadata.slice(0, visiblePosts).map((post) => (
             <Card key={post.id.toString()} className="p-4 w-full h-full">
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 rounded-full bg-gray-200 mr-2 flex items-center justify-center">
-                  {post.author.slice(0, 2)}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-gray-200 mr-2 flex items-center justify-center">
+                    {post.author.slice(0, 2)}
+                  </div>
+                  <div>
+                    <p className="font-bold">
+                      {post.author.slice(0, 6)}...{post.author.slice(-4)}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(Number(post.timeStamp) * 1000).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold">
-                    {post.author.slice(0, 6)}...{post.author.slice(-4)}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(Number(post.timeStamp) * 1000).toLocaleString()}
-                  </p>
-                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full h-8 w-8"
+                  onClick={() => handleOpenDialog(post.id, post.author)}
+                >
+                  <Bell className="h-4 w-4" />
+                </Button>
               </div>
 
               {post.metadata ? (
