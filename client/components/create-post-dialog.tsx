@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useWriteContract } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { Loader2, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import { uploadToIPFS, uploadImageToIPFS } from "@/lib/ipfs";
 import DecentralizedTwitterABI from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import type { PostMetadata } from "@/types/post";
 import { refreshPosts } from "@/lib/necessary-actions";
+import useEventStore from "@/store/eventStore";
 
 const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
 
@@ -37,8 +38,10 @@ export function CreatePostDialog({
   const [images, setImages] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { address } = useAccount();
 
   const { writeContract, isPending } = useWriteContract();
+  const { addEvent } = useEventStore();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -88,6 +91,10 @@ export function CreatePostDialog({
             setTitle("");
             setDescription("");
             setImages([]);
+            addEvent(
+              `${address} has created the post with metadata ${metadata.title}`
+            );
+
             onPostCreated?.();
             refreshPosts();
             resolve(true);

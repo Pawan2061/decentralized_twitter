@@ -1,4 +1,9 @@
+import useEventStore from "@/store/eventStore";
+
 export default function Activity() {
+  const { events } = useEventStore();
+  console.log(events, "events is here");
+
   return (
     <div className="w-full md:flex-1 lg:flex-2">
       <h1 className="text-xl md:text-2xl font-bold">Activities</h1>

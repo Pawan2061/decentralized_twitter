@@ -16,6 +16,7 @@ import { refreshPosts } from "@/lib/necessary-actions";
 import type { Post, PostMetadata } from "@/types/post";
 import { useRouter } from "next/navigation";
 import { EthSendDialog } from "./send-eth";
+import useEventStore from "@/store/eventStore";
 
 interface PostWithMetadata extends Post {
   metadata?: PostMetadata;
@@ -36,6 +37,7 @@ export default function Explore() {
     null
   );
 
+  const { addEvent } = useEventStore();
   const [postsWithMetadata, setPostsWithMetadata] = useState<
     PostWithMetadata[]
   >([]);
@@ -116,6 +118,7 @@ export default function Explore() {
         functionName: "likePost",
         args: [postId],
       });
+      addEvent(`${address} liked the post ${postId}`);
     } catch (err) {
       console.error("Error liking post:", err);
       setLikeError("Failed to like post. Please try again.");

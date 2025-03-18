@@ -9,6 +9,7 @@ import { useProfileStore } from "@/store/useProfileStore";
 import Landing from "@/components/landing";
 import { ColorPicker } from "@/components/ui/color-picker";
 import useColorStore from "@/store/use-color";
+import useEventStore from "@/store/eventStore";
 
 const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
 
@@ -29,6 +30,7 @@ const ProfileBanner = () => {
   const { writeContract, isPending } = useWriteContract();
   const { setProfile, getProfile } = useProfileStore();
   const { selectedColor } = useColorStore();
+  const { addEvent } = useEventStore();
 
   const { data: userProfile, isLoading: isLoadingProfile } = useReadContract({
     address: CONTRACT_ADDRESS as `0x${string}`,
@@ -97,6 +99,7 @@ const ProfileBanner = () => {
           address,
         });
       }
+      addEvent(`${address} has created a profile`);
 
       toast.success(
         hasExistingProfile
