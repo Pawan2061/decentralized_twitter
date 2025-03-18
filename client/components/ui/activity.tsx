@@ -11,6 +11,9 @@ export default function Activity() {
         Explore all the activities here
       </h1>
       <div className="bg-gray-200 shadow-xl rounded-xl w-full min-h-64 py-10 mt-4 flex items-center justify-center text-center">
+        {events.map((event) => (
+          <div>{event}</div>
+        ))}
         Your activity is empty now
       </div>
     </div>

@@ -99,7 +99,11 @@ const ProfileBanner = () => {
           address,
         });
       }
-      addEvent(`${address} has created a profile`);
+      if (hasExistingProfile) {
+        addEvent(`${address} has updated a profile`);
+      } else {
+        addEvent(`${address} has created a profile`);
+      }
 
       toast.success(
         hasExistingProfile
