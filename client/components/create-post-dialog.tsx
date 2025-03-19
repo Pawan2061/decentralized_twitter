@@ -21,7 +21,7 @@ import type { PostMetadata } from "@/types/post";
 import { refreshPosts } from "@/lib/necessary-actions";
 import useEventStore from "@/store/eventStore";
 
-const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 interface CreatePostDialogProps {
   trigger: React.ReactNode;

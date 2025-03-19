@@ -22,11 +22,13 @@ interface PostWithMetadata extends Post {
   metadata?: PostMetadata;
 }
 
-const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export default function Explore() {
   const router = useRouter();
   const { address, isConnecting: isWalletConnecting } = useAccount();
+  console.log(address, "okay");
+
   const chainId = useChainId();
   const [likeError, setLikeError] = useState("");
   const [visiblePosts, setVisiblePosts] = useState(10);
@@ -67,7 +69,7 @@ export default function Explore() {
     address: CONTRACT_ADDRESS as `0x${string}`,
     abi: DecentralizedTwitterABI.abi,
     functionName: "getPosts",
-    chainId: holesky.id,
+    // chainId: holesky.id,
     account: address,
   });
 
@@ -163,15 +165,15 @@ export default function Explore() {
     );
   }
 
-  if (chainId !== holesky.id) {
-    return (
-      <div className="text-center p-8">
-        <p className="text-yellow-500">
-          Please switch to the Holesky network to view posts
-        </p>
-      </div>
-    );
-  }
+  // if (chainId !== holesky.id) {
+  //   return (
+  //     <div className="text-center p-8">
+  //       <p className="text-yellow-500">
+  //         Please switch to the Holesky network to view posts
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   if (isError && !isNoPostsError) {
     return (

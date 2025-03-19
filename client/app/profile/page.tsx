@@ -10,8 +10,9 @@ import Landing from "@/components/landing";
 import { ColorPicker } from "@/components/ui/color-picker";
 import useColorStore from "@/store/use-color";
 import useEventStore from "@/store/eventStore";
+import { parseGwei } from "viem";
 
-const CONTRACT_ADDRESS = "0x900935a96f16c5A124967Ad7e5351c031dD2A1e6";
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 interface UserProfile {
   id: number;
@@ -77,12 +78,13 @@ const ProfileBanner = () => {
 
     setIsLoading(true);
     try {
-      await writeContract?.({
+      writeContract?.({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: DecentralizedTwitterABI.abi,
         functionName: hasExistingProfile ? "updateProfile" : "createProfile",
-
         args: [name, bio || ""],
+        gas: BigInt(2100000),
+        gasPrice: parseGwei("3"),
       });
 
       if (address) {

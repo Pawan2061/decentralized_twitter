@@ -1,3 +1,4 @@
+// components/event-card.tsx
 "use client";
 
 import {
@@ -7,12 +8,16 @@ import {
 } from "@/components/ui/announcement";
 import { ArrowUpRightIcon } from "lucide-react";
 
-const Example = () => (
-  <div className="flex flex-col w-full h-screen items-center justify-center gap-4">
+interface EventCardProps {
+  event: string;
+}
+
+const EventCard = ({ event }: EventCardProps) => (
+  <div className="w-full mb-4">
     <Announcement>
       <AnnouncementTag>Latest update</AnnouncementTag>
-      <AnnouncementTitle>
-        New feature added
+      <AnnouncementTitle className="flex items-center gap-1">
+        {event}
         <ArrowUpRightIcon
           size={16}
           className="shrink-0 text-muted-foreground"
@@ -22,4 +27,4 @@ const Example = () => (
   </div>
 );
 
-export { Example };
+export { EventCard };
