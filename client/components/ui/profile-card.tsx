@@ -1,12 +1,25 @@
 import React from "react";
 import { Bell } from "lucide-react";
 import { UserProfile } from "@/types/users";
-
+import decentralizedTwitterAbi from "../../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
+import { useAccount, useWriteContract } from "wagmi";
 interface ProfileCardProps {
   profile: UserProfile;
 }
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
+  const { writeContract } = useWriteContract();
+  const { address } = useAccount();
+  const handleClick = () => {
+    console.log("okay clicked");
+    writeContract?.({
+      address: CONTRACT_ADDRESS as `0x${string}`,
+      abi: decentralizedTwitterAbi.abi,
+      functionName: "followUser",
+      args: [profile.user],
+    });
+  };
   return (
     <div className="bg-white flex items-center justify-between p-4 rounded-lg shadow-sm w-full relative">
       <div className="flex items-center gap-4">
@@ -27,13 +40,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
             {profile.name || "Unknown"}
           </h2>
           <p className="text-gray-500 text-xs truncate max-w-xs">
-            {profile.user || "No address"}
+            {profile.user.slice(0, 6) || "No address"}
           </p>
         </div>
       </div>
 
       <div className="pr-1">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full h-10 w-10 flex items-center justify-center">
+        <button
+          onClick={handleClick}
+          className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full h-10 w-10 flex items-center justify-center"
+        >
           <Bell size={16} />
         </button>
       </div>

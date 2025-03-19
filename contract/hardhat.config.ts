@@ -15,7 +15,7 @@ const config: HardhatUserConfig = {
       accounts: PRIVATE_KEY,
     },
     holesky: {
-      url: "https://holesky.rpc.thirdweb.com",
+      url: "https://ethereum-holesky.publicnode.com",
       accounts: PRIVATE_KEY,
       chainId: 17000,
       gasPrice: 3_000_000_000,
@@ -31,3 +31,4 @@ const config: HardhatUserConfig = {
 
 export default config;
 // https://ethereum-holesky.publicnode.com
+// https://holesky.rpc.thirdweb.com"
