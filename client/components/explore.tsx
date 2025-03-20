@@ -258,7 +258,10 @@ export default function Explore() {
               </div>
 
               {post.metadata ? (
-                <div className="space-y-3 ">
+                <div
+                  className="space-y-3  "
+                  onClick={() => router.push(`/post/${post.id}`)}
+                >
                   <h2 className="text-xl font-semibold">
                     {post.metadata.title}
                   </h2>
