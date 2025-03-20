@@ -31,6 +31,7 @@ const ProfileBanner = () => {
   const { writeContract, isPending } = useWriteContract();
   const { setProfile, getProfile } = useProfileStore();
   const { selectedColor } = useColorStore();
+  const [followerLength, setFollowerLength] = useState(0);
   const { addEvent } = useEventStore();
 
   const { data: userProfile, isLoading: isLoadingProfile } = useReadContract({
@@ -43,16 +44,27 @@ const ProfileBanner = () => {
     },
   });
 
+  console.log(`Ox${address}`, "nduebfyebf");
+
+  const followers =
+    useProfileStore.getState().getProfile(`${address}`)?.followers || [];
+
   const hasExistingProfile =
     userProfile &&
     (userProfile as UserProfile).user !==
       "0x0000000000000000000000000000000000000000";
 
   useEffect(() => {
+    console.log(followers, "okay hiii");
+
     if (address) {
       console.log(address);
 
       const storedProfile = getProfile(address);
+      // @ts-ignore
+      // console.log(storedProfile?.followers.length, "okay");
+
+      setFollowerLength[storedProfile?.followers.length];
       console.log(storedProfile, "profile is here");
 
       if (storedProfile) {
@@ -66,6 +78,7 @@ const ProfileBanner = () => {
       }
     }
   }, [address, userProfile, hasExistingProfile, getProfile, setProfile]);
+  const profile = getProfile(`0x${address}`);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -169,7 +182,8 @@ const ProfileBanner = () => {
         <ColorPicker />
 
         <p className="text-sm font-mono text-gray-600">
-          {address?.slice(0, 6)}...{address?.slice(-4)}
+          {address?.slice(0, 6)}...{address?.slice(-4)}{" "}
+          <span className="text-gray-600">{followers.length}followers</span>
         </p>
         <h1 className="text-3xl font-bold">{name || "No name set"}</h1>
         <p className="text-gray-600">{bio || "No bio yet"}</p>

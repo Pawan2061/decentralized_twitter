@@ -3,6 +3,7 @@ export interface UserProfile {
   name: string;
   bio: string;
   premium: boolean;
+  followers: string[];
 }
 
 export type ProfileList = UserProfile[];

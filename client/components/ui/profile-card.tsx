@@ -3,23 +3,36 @@ import { Bell } from "lucide-react";
 import { UserProfile } from "@/types/users";
 import decentralizedTwitterAbi from "../../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { useAccount, useWriteContract } from "wagmi";
+import { useProfileStore } from "@/store/useProfileStore";
+
 interface ProfileCardProps {
   profile: UserProfile;
 }
+
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
   const { writeContract } = useWriteContract();
+  const { addFollower } = useProfileStore();
   const { address } = useAccount();
+
   const handleClick = () => {
     console.log("okay clicked");
+
+    if (!address) return;
+
     writeContract?.({
       address: CONTRACT_ADDRESS as `0x${string}`,
       abi: decentralizedTwitterAbi.abi,
       functionName: "followUser",
       args: [profile.user],
     });
+
+    if (profile.user && address) {
+      addFollower(profile.user, address);
+    }
   };
+
   return (
     <div className="bg-white flex items-center justify-between p-4 rounded-lg shadow-sm w-full relative">
       <div className="flex items-center gap-4">

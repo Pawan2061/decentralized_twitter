@@ -6,6 +6,7 @@ interface UserProfile {
   name: string;
   premium: boolean;
   bio: string;
+  followers: string[];
 }
 
 interface ProfileState {
@@ -14,6 +15,7 @@ interface ProfileState {
   getProfile: (address: string) => UserProfile | null;
   clearProfile: (address: string) => void;
   getAllProfiles: () => UserProfile[];
+  addFollower: (address: string, followerAddress: string) => void;
 }
 
 export const useProfileStore = create<ProfileState>()(
@@ -33,6 +35,7 @@ export const useProfileStore = create<ProfileState>()(
               name: profile.name || "",
               bio: profile.bio || "",
               premium: profile.premium || false,
+              followers: profile.followers || [],
             },
           },
         }));
@@ -56,6 +59,31 @@ export const useProfileStore = create<ProfileState>()(
       },
 
       getAllProfiles: () => Object.values(get().profiles),
+
+      addFollower: (address, followerAddress) => {
+        if (!address || !followerAddress) return;
+
+        const lowerAddress = address.toLowerCase();
+        const lowerFollowerAddress = followerAddress.toLowerCase();
+
+        set((state) => {
+          const profile = state.profiles[lowerAddress];
+
+          if (!profile) return state;
+
+          return {
+            profiles: {
+              ...state.profiles,
+              [lowerAddress]: {
+                ...profile,
+                followers: profile.followers.includes(lowerFollowerAddress)
+                  ? profile.followers
+                  : [...profile.followers, lowerFollowerAddress],
+              },
+            },
+          };
+        });
+      },
     }),
     {
       name: "profile-storage",
