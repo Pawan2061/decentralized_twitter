@@ -1,5 +1,5 @@
 import React from "react";
-import { Bell } from "lucide-react";
+import { Bell, UserPlus } from "lucide-react";
 import { UserProfile } from "@/types/users";
 import decentralizedTwitterAbi from "../../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { useAccount, useWriteContract } from "wagmi";
@@ -63,7 +63,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
           onClick={handleClick}
           className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full h-10 w-10 flex items-center justify-center"
         >
-          <Bell size={16} />
+          <UserPlus size={16} />
         </button>
       </div>
     </div>

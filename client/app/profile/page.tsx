@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import React, { useState, useEffect } from "react";
 import { useAccount, useWriteContract, useReadContract } from "wagmi";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users } from "lucide-react";
 import DecentralizedTwitterABI from "../../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/useProfileStore";
@@ -44,8 +44,6 @@ const ProfileBanner = () => {
     },
   });
 
-  console.log(`Ox${address}`, "nduebfyebf");
-
   const followers =
     useProfileStore.getState().getProfile(`${address}`)?.followers || [];
 
@@ -55,17 +53,12 @@ const ProfileBanner = () => {
       "0x0000000000000000000000000000000000000000";
 
   useEffect(() => {
-    console.log(followers, "okay hiii");
-
     if (address) {
-      console.log(address);
-
       const storedProfile = getProfile(address);
-      // @ts-ignore
-      // console.log(storedProfile?.followers.length, "okay");
 
-      setFollowerLength[storedProfile?.followers.length];
-      console.log(storedProfile, "profile is here");
+      if (storedProfile?.followers?.length) {
+        setFollowerLength(storedProfile.followers.length);
+      }
 
       if (storedProfile) {
         setName(storedProfile.name);
@@ -78,6 +71,7 @@ const ProfileBanner = () => {
       }
     }
   }, [address, userProfile, hasExistingProfile, getProfile, setProfile]);
+
   const profile = getProfile(`0x${address}`);
 
   const openModal = () => setIsModalOpen(true);
@@ -102,16 +96,12 @@ const ProfileBanner = () => {
 
       if (address) {
         setProfile(address, {
-          // id: hasExistingProfile ? Number((userProfile as UserProfile).id) : 0,
           user: address,
           name,
           bio: bio || "",
           premium: hasExistingProfile
             ? (userProfile as UserProfile).premium
             : false,
-        });
-        console.log({
-          address,
         });
       }
       if (hasExistingProfile) {
@@ -139,8 +129,6 @@ const ProfileBanner = () => {
   };
 
   if (!isConnected) {
-    console.log("okay here");
-
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <p className="text-lg text-gray-600">
@@ -152,7 +140,7 @@ const ProfileBanner = () => {
 
   if (isLoadingProfile) {
     return (
-      <div className="flex  flex-col items-center justify-center min-h-[50vh]">
+      <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
         <p className="mt-2 text-gray-600">Loading profile...</p>
       </div>
@@ -171,7 +159,8 @@ const ProfileBanner = () => {
 
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
           <div
-            className={`rounded-full h-24 w-24 bg-${selectedColor}-500 border-4 border-white overflow-hidden flex items-center justify-center text-white text-2xl`}
+            className="rounded-full h-24 w-24 border-4 border-white overflow-hidden flex items-center justify-center text-white text-2xl"
+            style={{ backgroundColor: selectedColor }}
           >
             {address ? address.slice(0, 2) : "?"}
           </div>
@@ -181,10 +170,21 @@ const ProfileBanner = () => {
       <div className="mt-16 space-y-4 flex flex-col items-center">
         <ColorPicker />
 
-        <p className="text-sm font-mono text-gray-600">
-          {address?.slice(0, 6)}...{address?.slice(-4)}{" "}
-          <span className="text-gray-600">{followers.length}followers</span>
-        </p>
+        <div className="flex items-center gap-4">
+          <div className="text-sm font-mono text-gray-600">
+            {address?.slice(0, 6)}...{address?.slice(-4)}
+          </div>
+
+          <div
+            className="flex items-center gap-1 px-3 py-1 rounded-full text-white shadow-md transition-transform hover:scale-105"
+            style={{ backgroundColor: selectedColor }}
+          >
+            <Users className="h-4 w-4" />
+            <span className="font-medium">{followers.length || 0}</span>
+            <span className="text-sm">followers</span>
+          </div>
+        </div>
+
         <h1 className="text-3xl font-bold">{name || "No name set"}</h1>
         <p className="text-gray-600">{bio || "No bio yet"}</p>
 
