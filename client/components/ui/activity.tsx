@@ -1,5 +1,4 @@
 "use client";
-
 import useEventStore from "@/store/eventStore";
 import { EventCard } from "@/components/event-card";
 import { useEffect, useState } from "react";
@@ -12,26 +11,40 @@ export default function Activity() {
     setIsClient(true);
   }, []);
 
-  return (
-    <div className="w-full p-4 md:flex-1 lg:flex-2">
-      <h1 className="text-xl md:text-2xl font-bold">Activities</h1>
-      <h2 className="text-md md:text-lg font-extralight mb-4">
-        Explore all the activities here
-      </h2>
+  const colorClasses = [
+    "bg-gradient-to-r from-purple-300 to-pink-400",
+    "bg-gradient-to-r from-blue-300 to-indigo-400",
+    "bg-gradient-to-r from-green-300 to-teal-400",
+    "bg-gradient-to-r from-red-300 to-orange-400",
+    "bg-gradient-to-r from-yellow-300 to-amber-400",
+  ];
 
-      <div className="bg-gray-200 shadow-xl rounded-xl w-full min-h-64 p-6 mt-4">
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
+        Activities
+      </h2>
+      <p className="text-gray-600 dark:text-gray-300 text-center">
+        Explore all the activities here
+      </p>
+
+      {/* Scrollable Container */}
+      <div className="mt-6 h-1/2 overflow-y-auto space-y-4 p-2 border rounded-lg shadow-inner bg-gray-100 dark:bg-gray-800">
         {isClient && events.length > 0 ? (
-          <div className="flex flex-col overflow-y-auto max-h-96">
-            {events.map((event, index) => (
-              <EventCard key={`event-${index}`} event={event} />
-            ))}
-          </div>
+          events.map((event, index) => (
+            <EventCard
+              key={index}
+              event={event}
+              colorClass={colorClasses[index % colorClasses.length]}
+            />
+          ))
         ) : (
-          <div className="flex items-center justify-center h-48 text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400 text-center">
             No activities to display
-          </div>
+          </p>
         )}
       </div>
+      <h1>hi</h1>
     </div>
   );
 }

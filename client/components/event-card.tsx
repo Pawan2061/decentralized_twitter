@@ -1,29 +1,18 @@
-// components/event-card.tsx
 "use client";
-
-import {
-  Announcement,
-  AnnouncementTag,
-  AnnouncementTitle,
-} from "@/components/ui/announcement";
-import { ArrowUpRightIcon } from "lucide-react";
+import { AnnouncementTitle } from "@/components/ui/announcement";
 
 interface EventCardProps {
   event: string;
+  colorClass: string;
 }
 
-const EventCard = ({ event }: EventCardProps) => (
-  <div className="w-full mb-4">
-    <Announcement>
-      <AnnouncementTag>Latest update</AnnouncementTag>
-      <AnnouncementTitle className="flex items-center gap-1">
-        {event}
-        <ArrowUpRightIcon
-          size={16}
-          className="shrink-0 text-muted-foreground"
-        />
-      </AnnouncementTitle>
-    </Announcement>
+const EventCard = ({ event, colorClass }: EventCardProps) => (
+  <div
+    className={`w-full max-w-3xl overflow-hidden mx-auto p-4 rounded-xl text-white shadow-md transition-transform transform hover:scale-105 ${colorClass}`}
+  >
+    <AnnouncementTitle className="text-lg font-semibold text-center">
+      {event}
+    </AnnouncementTitle>
   </div>
 );
 

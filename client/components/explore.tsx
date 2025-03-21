@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
-import { Loader2, PenSquare, Bell } from "lucide-react";
+import { Loader2, PenSquare, Bell, CircleDollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -253,7 +253,7 @@ export default function Explore() {
                   className="rounded-full h-8 w-8"
                   onClick={() => handleOpenDialog(post.id, post.author)}
                 >
-                  <Bell className="h-4 w-4" />
+                  <CircleDollarSign className="h-4 w-4" />
                 </Button>
               </div>
 
