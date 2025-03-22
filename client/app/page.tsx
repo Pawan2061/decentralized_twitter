@@ -14,8 +14,8 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto">
-      {selectedTab === "explore" ? <Explore /> : <Inbox/>}
+    <div className="container mx-auto my-6">
+      {selectedTab === "explore" ? <Explore /> : <Inbox />}
     </div>
   );
 }

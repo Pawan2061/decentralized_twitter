@@ -11,6 +11,7 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import useColorStore from "@/store/use-color";
 import useEventStore from "@/store/eventStore";
 import { parseGwei } from "viem";
+import UserPosts from "@/components/userPosts";
 
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -205,6 +206,7 @@ const ProfileBanner = () => {
           )}
         </Button>
       </div>
+      <UserPosts />
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
