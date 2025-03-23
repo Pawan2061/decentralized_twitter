@@ -83,7 +83,7 @@ export function ProfileModal({ isOpen, onClose }: any) {
           <Link href="/profile">
             <Button variant="outline" className="justify-start w-full">
               <UserCog className="mr-2 h-4 w-4" />
-              Edit Profile
+              View Profile
             </Button>
           </Link>
 

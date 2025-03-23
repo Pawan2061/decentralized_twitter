@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import decentralizedAbi from "../../contract/artifacts/contracts/DecentralizedTwitter.sol/DecentralizedTwitter.json";
 import { getFromIPFS, getIPFSImageUrl } from "../lib/ipfs";
 import { PostMetadata, PostwithSingleMetadata } from "@/types/post";
+import { useRouter } from "next/navigation";
 
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -18,6 +19,7 @@ type PostWithMetadata = {
 
 export default function UserPosts() {
   const { address } = useAccount();
+  const router = useRouter();
   const [postsWithMetadata, setPostsWithMetadata] = useState<
     PostWithMetadata[]
   >([]);
@@ -106,6 +108,7 @@ export default function UserPosts() {
           {postsWithMetadata.map((post) => (
             <div
               key={post.id.toString()}
+              onClick={() => router.push(`/post/${post.id}`)}
               className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
             >
               {post.metadata && (
@@ -125,6 +128,7 @@ export default function UserPosts() {
                   <p className="text-gray-800 mb-3">
                     {post.metadata.description}
                   </p>
+
                   {post.metadata.tags && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {post.metadata.tags.map((tag, index) => (
