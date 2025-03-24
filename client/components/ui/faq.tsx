@@ -1,46 +1,45 @@
-import { Faq3 } from "@/components/blocks/faq3";
-
+import { Faq3 } from "../blocks/faq3";
 const demoData = {
-  heading: "Frequently asked questions",
+  heading: "Frequently Asked Questions",
   description:
-    "Everything you need to know about shadcnblocks. Can't find the answer you're looking for? Feel free to contact our support team.",
+    "Everything you need to know about our decentralized Twitter. Can't find the answer you're looking for? Feel free to contact our support team.",
   items: [
     {
       id: "faq-1",
-      question: "What is shadcnblocks?",
+      question: "What is this decentralized Twitter?",
       answer:
-        "shadcnblocks is a collection of ready-to-use block components built on top of shadcn/ui, designed to help you build beautiful websites faster.",
+        "Our decentralized Twitter is a social media platform where every post and profile is stored directly on the Ethereum blockchain, ensuring full ownership and censorship resistance.",
     },
     {
       id: "faq-2",
-      question: "How do I install shadcnblocks?",
+      question: "How does it work?",
       answer:
-        "shadcnblocks components are designed to be copied and pasted into your project. Simply browse the components, click on the one you want to use, and copy the code directly into your project. This gives you full control over the code and allows for easy customization.",
+        "When you create a profile or post a tweet, the data is stored on the Ethereum blockchain. This means no central authority controls your content, and your posts remain immutable.",
     },
     {
       id: "faq-3",
-      question: "Is shadcnblocks free to use?",
+      question: "Do I need cryptocurrency to use it?",
       answer:
-        "Yes, shadcnblocks is open-source and free to use in both personal and commercial projects. You can customize and modify the blocks to suit your needs.",
+        "Yes, since all data is stored on the blockchain, you need a small amount of ETH to cover gas fees for posting and updating your profile.",
     },
     {
       id: "faq-4",
-      question: "Can I customize the blocks?",
+      question: "Is my data truly secure?",
       answer:
-        "Absolutely! All blocks are built with customization in mind. You can modify the styling, content, and behavior through props and Tailwind CSS classes.",
+        "Yes, blockchain technology ensures that your data is decentralized, tamper-proof, and owned entirely by you. No one can alter or delete your content without your permission.",
     },
     {
       id: "faq-5",
-      question: "Do you offer support?",
+      question: "Can my account be banned or censored?",
       answer:
-        "Yes, we provide support through our GitHub repository where you can report issues, suggest features, or ask questions about implementation.",
+        "No, unlike traditional social media platforms, there is no central authority to ban or censor content. However, users can filter content based on preferences.",
     },
   ],
   supportHeading: "Still have questions?",
   supportDescription:
     "Can't find the answer you're looking for? Our support team is here to help with any technical questions or concerns.",
   supportButtonText: "Contact Support",
-  supportButtonUrl: "https://shadcnblocks.com",
+  supportButtonUrl: "https://your-decentralized-twitter-support.com",
 };
 
 function Faq3Demo() {

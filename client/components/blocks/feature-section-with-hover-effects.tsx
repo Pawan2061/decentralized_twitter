@@ -1,65 +1,68 @@
 import { cn } from "@/lib/utils";
 import {
-  IconAdjustmentsBolt,
-  IconCloud,
-  IconCurrencyDollar,
-  IconEaseInOut,
-  IconHeart,
+  IconShieldLock,
+  IconWorld,
+  IconCurrencyEthereum,
+  IconClock,
+  IconUsers,
   IconHelp,
-  IconRouteAltLeft,
-  IconTerminal2,
+  IconBroadcast,
+  IconMessageCircle,
 } from "@tabler/icons-react";
 
 export function FeaturesSectionWithHoverEffects() {
   const features = [
     {
-      title: "Built for developers",
+      title: "Truly Decentralized",
       description:
-        "Built for engineers, developers, dreamers, thinkers and doers.",
-      icon: <IconTerminal2 />,
+        "Every post and profile is stored on the Ethereum blockchain. No single entity controls your data.",
+      icon: <IconShieldLock />,
     },
     {
-      title: "Ease of use",
+      title: "Global Accessibility",
       description:
-        "It's as easy as using an Apple, and as expensive as buying one.",
-      icon: <IconEaseInOut />,
+        "Accessible from anywhere in the world without restrictions. No censorship, no limitations.",
+      icon: <IconWorld />,
     },
     {
-      title: "Pricing like no other",
+      title: "Crypto-Powered",
       description:
-        "Our prices are best in the market. No cap, no lock, no credit card required.",
-      icon: <IconCurrencyDollar />,
+        "Transactions and interactions are backed by Ethereum, ensuring transparency and security.",
+      icon: <IconCurrencyEthereum />,
     },
     {
-      title: "100% Uptime guarantee",
-      description: "We just cannot be taken down by anyone.",
-      icon: <IconCloud />,
-    },
-    {
-      title: "Multi-tenant Architecture",
-      description: "You can simply share passwords instead of buying new seats",
-      icon: <IconRouteAltLeft />,
-    },
-    {
-      title: "24/7 Customer Support",
+      title: "Permanent & Uncensorable",
       description:
-        "We are available a 100% of the time. Atleast our AI Agents are.",
+        "Once posted, always available. Your words cannot be taken down by centralized authorities.",
+      icon: <IconClock />,
+    },
+    {
+      title: "Community-Owned",
+      description:
+        "Users govern the platform. No corporations, only decentralized decision-making.",
+      icon: <IconUsers />,
+    },
+    {
+      title: "24/7 Support",
+      description:
+        "Our community and AI agents are here to help you around the clock.",
       icon: <IconHelp />,
     },
-    // {
-    //   title: "Money back guarantee",
-    //   description:
-    //     "If you donot like EveryAI, we will convince you to like us.",
-    //   icon: <IconAdjustmentsBolt />,
-    // },
-    // {
-    //   title: "And everything else",
-    //   description: "I just ran out of copy ideas. Accept my sincere apologies",
-    //   icon: <IconHeart />,
-    // },
+    {
+      title: "On-Chain Broadcasting",
+      description:
+        "Every tweet-like post is recorded on-chain, making it verifiable and immutable.",
+      icon: <IconBroadcast />,
+    },
+    {
+      title: "Smart Contracts for Engagement",
+      description:
+        "Likes, retweets, and follows are executed via smart contracts, ensuring fairness.",
+      icon: <IconMessageCircle />,
+    },
   ];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  relative z-10 py-10 max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 relative z-10 py-10 max-w-7xl mx-auto">
       {features.map((feature, index) => (
         <Feature key={feature.title} {...feature} index={index} />
       ))}
@@ -81,7 +84,7 @@ const Feature = ({
   return (
     <div
       className={cn(
-        "flex flex-col lg:border-r  py-10 relative group/feature dark:border-neutral-800",
+        "flex flex-col lg:border-r py-10 relative group/feature dark:border-neutral-800",
         (index === 0 || index === 4) && "lg:border-l dark:border-neutral-800",
         index < 4 && "lg:border-b dark:border-neutral-800"
       )}
